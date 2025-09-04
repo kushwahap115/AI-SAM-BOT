@@ -1,0 +1,21 @@
+{
+  "name": "AISAMBOT",
+  "short_name": "AISAMBOT",
+  "start_url": "AISAMBOT.html",
+  "display": "standalone",
+  "background_color": "#000814",
+  "theme_color": "#00ff88",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "ap-favicon.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "ap-favicon.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

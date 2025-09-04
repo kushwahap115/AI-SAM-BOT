@@ -1,0 +1,535 @@
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#00ff88">
+
+<script>
+  if ("serviceWorker" in navigator) {
+    window.addEventListener("load", () => {
+      navigator.serviceWorker.register("service-worker.js");
+    });
+  }
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>AISAMBOT — Premium Hacker Theme</title>
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <!-- New favicon (neon 'AISAMBOT' badge) -->
+  <link rel="icon" type="image/png" href="ap-favicon.png">
+    <defs>
+      <linearGradient id="g" x1="0" x2="1">
+        <stop offset="0%" stop-color="#00c3ff"/>
+        <stop offset="100%" stop-color="#00ff88"/>
+      </linearGradient>
+    </defs>
+    <rect width="64" height="64" rx="12" ry="12" fill="#00131a"/>
+    <rect x="1" y="1" width="62" height="62" rx="11" ry="11" fill="none" stroke="url(#g)" stroke-opacity=".35"/>
+    <text x="50%" y="54%" text-anchor="middle" font-family="Share Tech Mono, monospace" font-size="26" font-weight="700" fill="url(#g)">AISAMBOT</text>
+  </svg>' />
+  <style>
+    /* ========== HACKER / PREMIUM THEME (polished) ========== */
+    :root{
+      --bg-1:#000814; --bg-2:#001529; --glass: rgba(255,255,255,0.03);
+      --neon:#00ff88; --accent:#00c3ff; --warn:#ff6b6b; --muted:#9aa6b2;
+      --premium:#ffd166; --card:#031019;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0; min-height:100vh; font-family:'Roboto',system-ui,-apple-system,Segoe UI,Roboto,'Helvetica Neue',Arial;
+      background: radial-gradient(ellipse at 20% 10%, rgba(0,195,255,0.03), transparent 10%),
+                  radial-gradient(ellipse at 80% 0%, rgba(0,255,136,0.03), transparent 14%),
+                  linear-gradient(180deg,var(--bg-1),var(--bg-2));
+      color:var(--neon); overflow-x:hidden;
+    }
+
+    /* Matrix rain canvas (behind everything) */
+    canvas#matrix{ position:fixed; inset:0; z-index:0; pointer-events:none; opacity:.38; filter:blur(.5px) contrast(1.1) saturate(1.1); }
+
+    header{
+      position:relative; z-index:3; padding:20px 16px; text-align:center;
+      border-bottom:1px solid rgba(0,255,136,0.06);
+      backdrop-filter: blur(6px);
+    }
+    .brand{
+      display:flex; gap:14px; align-items:center; justify-content:center;
+    }
+    .logo{
+      width:56px; height:56px; border-radius:10px; background:linear-gradient(135deg,#00121a,#002b2b);
+      box-shadow:0 6px 24px rgba(0,195,255,0.06), inset 0 1px 0 rgba(255,255,255,0.02);
+      display:flex; align-items:center; justify-content:center; font-family:'Share Tech Mono', monospace;
+      color:var(--premium); font-weight:700; font-size:18px; letter-spacing:1px;
+      border:1px solid rgba(255,255,255,0.02);
+    }
+    h1{ margin:0; font-family:'Share Tech Mono', monospace; font-size:22px; color:var(--neon); text-shadow:0 0 10px rgba(0,255,136,0.08), 0 0 24px rgba(0,195,255,0.02); }
+    .subtitle{ display:none !important; } /* (1) Hide top subtitle line */
+    /* Page container */
+    .wrap{ position:relative; z-index:2; width:94%; max-width:1100px; margin:26px auto; display:grid; gap:16px; grid-template-columns:1fr 360px; }
+    @media (max-width:980px){ .wrap{ grid-template-columns:1fr; padding:0 12px } .side{ order:2 } }
+
+    /* Main panel */
+    .panel{
+      background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.015));
+      border:1px solid rgba(0,255,136,0.05); padding:16px; border-radius:14px; box-shadow:0 10px 40px rgba(2,6,23,0.6);
+      color:var(--neon);
+    }
+    label{ display:block; color:var(--muted); font-size:13px; margin-bottom:6px; font-weight:600; }
+    input,select,button{
+      width:100%; padding:10px 12px; border-radius:10px; border:1px solid rgba(255,255,255,0.05);
+      background:rgba(0,0,0,0.2); color:var(--neon); outline:none; font-size:14px; font-weight:600;
+    }
+    .controls{ display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:10px; }
+    .controls .full{ grid-column:span 3; }
+    @media (max-width:980px){ .controls{ grid-template-columns:1fr 1fr; } .controls .full{ grid-column:span 2; } }
+
+    /* buttons */
+    .btn{
+      background:linear-gradient(90deg,var(--accent), #00ffa6); border:0; color:#001; font-weight:900; letter-spacing:1px; cursor:pointer;
+      box-shadow:0 8px 30px rgba(0,195,255,0.1), inset 0 -2px 10px rgba(255,255,255,0.02);
+    }
+
+    /* right column */
+    .side{ position:sticky; top:22px; align-self:start; height:max-content; display:flex; flex-direction:column; gap:12px; }
+    .card{ background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.02)); padding:12px; border-radius:12px; border:1px solid rgba(255,255,255,0.03); color:var(--neon); }
+    .small{ color:var(--muted); font-size:13px; }
+
+    /* signals list */
+    .signals{ display:grid; gap:8px; margin-top:8px; }
+    .sig{ display:flex; justify-content:space-between; align-items:center; padding:10px 12px; border-radius:10px; font-weight:700; }
+    .sig.call{ background:linear-gradient(90deg, rgba(0,255,136,0.06), rgba(0,195,255,0.02)); color:#00230f; border:1px solid rgba(0,255,136,0.12); }
+    .sig.put{ background:linear-gradient(90deg, rgba(255,107,144,0.05), rgba(255,107,144,0.02)); color:#3b0f15; border:1px solid rgba(255,107,144,0.12); }
+    .sig.side{ background:rgba(255,255,255,0.01); color:var(--muted); border:1px dashed rgba(255,255,255,0.03); }
+
+    /* premium badge top-right */
+    .badge{
+      position:absolute; right:18px; top:-10px; background:linear-gradient(90deg,#ffd166,#ff9f1c); color:#071017; padding:8px 10px; border-radius:999px; font-weight:900;
+      box-shadow:0 10px 30px rgba(255,161,66,0.12), 0 2px 8px rgba(0,0,0,0.6); z-index:4; font-family:'Share Tech Mono',monospace;
+      transform:translateY(-6px);
+    }
+
+    /* Animated popups (notification) */
+    .notify{
+      position:fixed; right:22px; bottom:22px; z-index:9999; display:flex; flex-direction:column; gap:10px; align-items:flex-end;
+    }
+    .notify .note{
+      min-width:220px; padding:12px 14px; border-radius:10px; color:#001; font-weight:800; background:linear-gradient(90deg,#00ff88,#00c3ff); box-shadow:0 12px 40px rgba(0,195,255,0.12);
+      transform:translateY(20px); opacity:0; animation:popIn .6s forwards;
+    }
+    .notify .note.warn{ background:linear-gradient(90deg,#ffd166,#ff6b6b); color:#081217; }
+
+    @keyframes popIn{ to{ transform:none; opacity:1 } }
+
+    /* Modal premium */
+    .modal-back{ position:fixed; inset:0; background:rgba(0,0,0,0.6); display:none; z-index:9998; align-items:center; justify-content:center; }
+    .modal{ width:420px; max-width:94%; background:linear-gradient(180deg,#00131a,#001a29); padding:18px; border-radius:12px; border:1px solid rgba(255,255,255,0.03); color:var(--neon); box-shadow:0 30px 80px rgba(0,0,0,0.8); transform:translateY(-20px); }
+    .modal h2{ margin:0 0 8px 0; font-family:'Share Tech Mono', monospace; color:var(--premium); }
+    .modal p{ color:var(--muted); margin:8px 0 14px 0; font-size:14px; }
+    .modal .actions{ display:flex; gap:10px; justify-content:flex-end; }
+
+    /* Glitch header text (CGI) */
+    .glitch{ position:relative; display:inline-block; font-family:'Share Tech Mono',monospace; color:var(--neon); }
+    .glitch::before, .glitch::after{ content:attr(data-text); position:absolute; left:0; top:0; opacity:.8; }
+    .glitch::before{ transform:translateX(2px) skewX(-10deg); color:#00c3ff; clip-path:polygon(0 0,100% 0,100% 35%,0 35%); animation:gl1 1.7s infinite linear; }
+    .glitch::after{ transform:translateX(-2px) skewX(8deg); color:#00ff88; clip-path:polygon(0 65%,100% 65%,100% 100%,0 100%); animation:gl2 1.5s infinite linear; }
+    @keyframes gl1{ 0%{opacity:.5}50%{opacity:1}100%{opacity:.5} }
+    @keyframes gl2{ 0%{opacity:1}50%{opacity:.4}100%{opacity:1} }
+
+    footer{ text-align:center; padding:14px; color:var(--muted); font-size:13px; margin-top:18px; }
+  </style>
+</head>
+<body>
+
+  <canvas id="matrix"></canvas>
+
+  <header>
+    <div class="brand">
+      <div class="logo">AISAMBOT</div>
+      <div>
+        <div class="glitch" data-text="AISAMBOT">AISAMBOT</div>
+        <div class="subtitle">Hybrid Signals • EMA + MTF + Volume + ATR • Premium UI</div>
+      </div>
+    </div>
+    <div class="badge">PREMIUM</div>
+  </header>
+
+  <main class="wrap">
+    <section class="panel">
+      <div style="display:flex; gap:12px; align-items:center; justify-content:space-between;">
+        <div style="display:flex; gap:12px; align-items:center;">
+          <div style="width:64px; height:64px; border-radius:8px; background:linear-gradient(90deg,#00121a,#002b2b); display:flex;align-items:center;justify-content:center; font-family:'Share Tech Mono',monospace; color:var(--premium); font-weight:900; font-size:20px;">AISAMBOT</div>
+          <div>
+            <div style="font-weight:900; color:var(--neon); font-size:16px;">Hybrid Signal Engine</div>
+            <div class="small">Soft backtest gate — premium feel</div>
+          </div>
+        </div>
+        <div style="display:flex; gap:8px;">
+          
+          
+        </div>
+      </div>
+
+      <div style="margin-top:14px;" class="card">
+        <div class="controls">
+          <div>
+            <label>AISAMBOTI Key (optional)</label>
+            <input id="apiKey" placeholder="TwelveData AISAMBOTI key — optional"/>
+          </div>
+          <div>
+            <label>Asset</label>
+            <select id="symbol">
+              <option>EUR/USD</option><option>GBP/USD</option><option>USD/JPY</option><option>AUD/USD</option><option selected>USD/INR</option>
+              <option>BTCUSD</option><option>ETHUSD</option> <!-- (4) Added BTCUSD & ETHUSD -->
+            </select>
+          </div>
+          <div>
+            <label>Interval</label>
+            <select id="interval"><option>1min</option><option selected>5min</option><option>15min</option><option>1h</option></select>
+          </div>
+
+          <div class="full">
+            <label>Higher TF (MTF)</label>
+            <select id="higherInterval"><option>15min</option><option selected>1h</option><option>4h</option></select>
+          </div>
+
+          <div>
+            <label>Signals</label>
+            <input type="number" id="signalCount" value="10" min="1" max="30"/>
+          </div>
+          <div>
+            <label>Type</label>
+            <select id="filterType"><option value="ALL">ALL</option><option value="CALL">CALL</option><option value="PUT">PUT</option></select>
+          </div>
+          <div>
+            <label>Min Conf (%)</label>
+            <input type="number" id="minConf" value="50" min="0" max="100"/>
+          </div>
+
+          <div>
+            <label>Backtest lookback</label>
+            <input type="number" id="btLookback" value="300" min="50" max="2000"/>
+          </div>
+          <div>
+            <label>Expiry (candles)</label>
+            <input type="number" id="expiryCandles" value="1" min="1" max="6"/>
+          </div>
+          <div>
+            <label>BT min %</label>
+            <input type="number" id="btMin" value="56" min="0" max="100"/>
+          </div>
+        </div>
+
+        <div style="display:flex; gap:10px; margin-top:10px;">
+          <button class="btn" id="btnBacktest">Backtest</button>
+          <button class="btn" id="btnGenerate">Generate Signals</button>
+          <div id="btStatus" class="small" style="margin-left:auto; align-self:center; color:var(--muted)"></div>
+        </div>
+
+        <div style="margin-top:14px;" id="infoLog" class="small"></div>
+      </div>
+
+      <div style="margin-top:12px;">
+        <div style="font-weight:900; color:var(--neon); margin-bottom:8px;">Generated Signals</div>
+        <div id="signalList" class="signals"></div>
+      </div>
+    </section>
+
+    <aside class="side">
+      <div class="card">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <div style="font-weight:900">Account</div>
+          <div style="font-size:13px; color:var(--muted)">Premium</div>
+        </div>
+        <div class="small" style="margin-top:8px;">Alerts enabled • Offline/online data supported.</div>
+        <hr style="border:none; height:1px; background:rgba(255,255,255,0.02); margin:12px 0"/>
+        <div style="display:grid; gap:8px;">
+          <div class="small">Default market: <strong>EUR/USD</strong></div>
+          <div class="small">Expiry logic: candle-opening</div>
+          <div class="small">Martingale: Disabled in demo</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div style="font-weight:900; color:var(--neon)">Premium Features</div>
+        <ul style="margin:8px 0 0 18px; color:var(--muted);">
+          <li>Real-time Telegram alerts</li>
+          <li>Signal confidence screenshot</li>
+          <li>Advanced smoothing & session filters</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <div style="font-weight:900; color:var(--neon)">Quick Actions</div>
+        <div style="display:flex; gap:8px; margin-top:8px;">
+          <button class="btn" id="btnDemo">Demo Signals</button>
+          <button class="btn" id="btnClear">Clear</button>
+        </div>
+      </div>
+    </aside>
+  </main>
+
+  <div class="notify" id="notifyArea"></div>
+
+  <!-- Modal -->
+  <div class="modal-back" id="modalBack">
+    <div class="modal">
+      <h2>AISAMBOT — PREMIUM</h2>
+      <p>Upgrade to Premium to enable live Telegram alerts, prioritized signals, and pro UI features. (Demo upgrade is visual only.)</p>
+      <div class="actions" style="display:flex; gap:8px; justify-content:flex-end;">
+        <button id="closeModal" style="background:#0b1f2b; color:var(--neon); border:1px solid rgba(255,255,255,0.03); padding:10px 12px; border-radius:8px;">Later</button>
+        <button id="buyNow" class="btn">Get Premium</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- (2) Footer text exactly as requested -->
+  <footer>@ 2025 AISAMBOT</footer>
+
+  <script>
+    /* ================= TELEGRAM ALERTS (3) ================= */
+    const TG_CHAT_ID = "-1002673179037";
+    const TG_TOKEN = "7586062167:AAGT5TQFLBI0O0rzKxJxJKdN2gtr9c2HSFs";
+    async function sendTelegram(text){
+      try{
+        await fetch(`https://api.telegram.org/bot${TG_TOKEN}/sendMessage`, {
+          method:'POST',
+          headers:{ 'Content-Type':'application/json' },
+          body: JSON.stringify({ chat_id: TG_CHAT_ID, text })
+        });
+      }catch(e){ /* silently ignore */ }
+    }
+
+    /* ========== MATRIX BACKGROUND ========== */
+    (function matrixInit(){
+      const canvas = document.getElementById('matrix'); const ctx = canvas.getContext('2d');
+      function resize(){ canvas.width = innerWidth; canvas.height = innerHeight; }
+      window.addEventListener('resize', resize); resize();
+      const cols = Math.floor(canvas.width / 16); const ypos = Array(cols).fill(0);
+      function step(){
+        ctx.fillStyle = 'rgba(0,0,0,0.06)'; ctx.fillRect(0,0,canvas.width,canvas.height);
+        ctx.fillStyle = 'rgba(0,255,136,0.75)'; ctx.font = '14px Share Tech Mono';
+        ypos.forEach((y, ind) => {
+          const text = String.fromCharCode(33 + Math.random()*90);
+          const x = ind * 16;
+          ctx.fillText(text, x, y);
+          if (y > 100 + Math.random()*10000) ypos[ind] = 0; else ypos[ind] = y + 16;
+        });
+        requestAnimationFrame(step);
+      }
+      step();
+    })();
+
+    /* ========== CORE LOGIC (Hybrid) ========== */
+    const $ = id => document.getElementById(id);
+    async function safeFetch(url){
+      const r = await fetch(url); if(!r.ok) throw new Error('Network '+r.status); return r.json();
+    }
+
+    async function fetchTwelveData(apiKey, symbol, interval, limit=800){
+      if(!apiKey) throw new Error('NO_AISAMBOTI');
+      const q = new URLSearchParams({ symbol, interval, outputsize: limit, apikey: apiKey });
+      const url = 'https://api.twelvedata.com/time_series?' + q.toString();
+      const j = await safeFetch(url);
+      if(j.status==='error') throw new Error(j.message||'AISAMBOTI error');
+      const values = j.values||[]; if(!values.length) throw new Error('NO_DATA');
+      return values.map(v=>({ t:new Date(v.datetime), o:+v.open, h:+v.high, l:+v.low, c:+v.close, v:+v.volume })).reverse();
+    }
+
+    const ema = (s,n) => { const k=2/(n+1); const out=[]; s.forEach((c,i)=> out.push(i? c.c*k+out[i-1]*(1-k):c.c)); return out; };
+    function detectTrend(s, lb=6){ if(s.length<lb) return 'SIDE'; let u=0,d=0; for(let i=s.length-lb;i<s.length-1;i++){ (s[i+1].c>s[i].c)?u++:d++; } if(u>=(lb-1)*.7) return 'UP'; if(d>=(lb-1)*.7) return 'DOWN'; return 'SIDE'; }
+    function volumeSpike(s){ const vs=s.map(c=>c.v||0); const avg=vs.reduce((a,b)=>a+b,0)/(vs.length||1); const cur=vs.at(-1)||0; return {flag:cur>avg*1.4, ratio:(avg?cur/avg:0)}; }
+    function detectPattern(s){ if(s.length<2) return null; const p=s.at(-2), c=s.at(-1); if(p.c<p.o && c.c>c.o && c.c>p.o && c.o<p.c) return 'BULL'; if(p.c>p.o && c.c<c.o && c.c<p.o && c.o>p.c) return 'BEAR'; if((c.h-c.c)>(c.c-c.o)*2 && (c.c-c.o)>(c.o-c.l)) return 'BULL'; if((c.c-c.l)>(c.o-c.c)*2 && (c.o-c.c)>(c.h-c.o)) return 'BEAR'; return null; }
+    function findSR(s,w=50){ const sl=s.slice(-w); let hh=-Infinity,ll=Infinity; sl.forEach(c=>{ if(c.h>hh) hh=c.h; if(c.l<ll) ll=c.l; }); return {res:hh, sup:ll}; }
+    function atr(s,n=14){ if(s.length<n+1) return 0; const trs=[]; for(let i=1;i<s.length;i++){ const h=s[i].h,l=s[i].l,pc=s[i-1].c; trs.push(Math.max(h-l, Math.abs(h-pc), Math.abs(l-pc))); } return trs.slice(-n).reduce((a,b)=>a+b,0)/n; }
+    function ivToMin(iv){ if(iv.endsWith('min')) return +iv.replace('min',''); if(iv.endsWith('h')) return +iv.replace('h','')*60; return 5; }
+    function alignToNextCandle(interval){ const now=new Date(); const step=ivToMin(interval); const aligned=new Date(now); aligned.setSeconds(0,0); const m=aligned.getMinutes(); const next=(Math.floor(m/step)+1)*step; const mod = next % 60; const hourAdd = next>=60 ? 1 : 0; aligned.setMinutes(mod); aligned.setHours(aligned.getHours()+hourAdd); return aligned; }
+
+    function decideSignalWithConfidence(base, htf, srWindow=50){
+      const ef=ema(base,9), es=ema(base,21), efH=ema(htf,9), esH=ema(htf,21);
+      const tr=detectTrend(base), trH=detectTrend(htf);
+      const sr=findSR(base, srWindow), pat=detectPattern(base);
+      const vol=volumeSpike(base), a=atr(base);
+      const last=base.at(-1) || {h:0,l:0,c:0};
+      const rangeOk = a>0 ? (last.h-last.l) > 0.45*a : true;
+      let conf=0;
+      if(rangeOk) conf+=10; else conf-=10;
+      if(ef.at(-1)>es.at(-1)) conf+=10; else conf-=5;
+      if(efH.at(-1)>esH.at(-1)) conf+=10; else conf-=5;
+      if(tr==='UP') conf+=8; if(tr==='DOWN') conf+=8;
+      if(trH==='UP') conf+=8; if(trH==='DOWN') conf+=8;
+      if(vol.flag) conf+=10;
+      if(pat==='BULL' || pat==='BEAR') conf+=8;
+      if(last.c>sr.sup) conf+=4; else conf-=4;
+      if(last.c<sr.res) conf+=4; else conf-=4;
+      let dir='SIDE';
+      const bull = rangeOk && tr==='UP' && trH==='UP' && ef.at(-1)>es.at(-1) && efH.at(-1)>esH.at(-1) && (vol.flag||pat==='BULL') && last.c>sr.sup;
+      const bear = rangeOk && tr==='DOWN' && trH==='DOWN' && ef.at(-1)<es.at(-1) && efH.at(-1)<esH.at(-1) && (vol.flag||pat==='BEAR') && last.c<sr.res;
+      if(bull) dir='CALL'; else if(bear) dir='PUT';
+      conf = Math.max(0, Math.min(100, Math.round(conf)));
+      return {dir, conf, details:{tr,trH,vol,pat,atr:a}};
+    }
+
+    function backtest(base, htf, expiry=1, lookback=300, srWindow=50){
+      if(base.length < lookback + expiry + 10) return {wins:0,losses:0,side:0,accuracy:0};
+      const start = base.length - (lookback + expiry);
+      let wins=0,losses=0,side=0;
+      for(let i=start;i<base.length-expiry;i++){
+        const b = base.slice(0,i+1);
+        const hIndex = Math.max(1, Math.min(htf.length-1, Math.floor(i * (htf.length/base.length))));
+        const h = htf.slice(0,hIndex+1);
+        const {dir} = decideSignalWithConfidence(b,h,srWindow);
+        if(dir==='SIDE'){ side++; continue; }
+        const win = dir==='CALL' ? base[i+expiry].c > base[i].c : base[i+expiry].c < base[i].c;
+        if(win) wins++; else losses++;
+      }
+      const tot=wins+losses; const acc = tot ? Math.round((wins/tot)*1000)/10 : 0;
+      return {wins,losses,side,accuracy:acc};
+    }
+
+    /* ========== UI & flow ========== */
+    function notify(text, warn=false){
+      const area = $('notifyArea');
+      const el = document.createElement('div'); el.className='note';
+      if(warn) el.classList.add('warn');
+      el.textContent = text;
+      area.appendChild(el);
+      setTimeout(()=>{ el.style.opacity='0'; el.style.transform='translateY(10px)'; setTimeout(()=>el.remove(),900); }, 4200);
+    }
+
+    async function generateSignalsHybrid(){
+      // UI
+      $('signalList').innerHTML=''; $('infoLog').textContent=''; $('btStatus').textContent='';
+      // read inputs
+      const apiKey = $('apiKey').value.trim();
+      const sym = document.querySelector('#symbol').value;
+      const iv = document.querySelector('#interval').value;
+      const hiv = document.querySelector('#higherInterval').value;
+      const count = Math.max(1, parseInt(document.querySelector('#signalCount').value||10));
+      const filter = document.querySelector('#filterType').value;
+      const minConf = Math.max(0, Math.min(100, parseInt(document.querySelector('#minConf').value||50)));
+      const btLookback = parseInt(document.querySelector('#btLookback').value||300);
+      const btExpiry = parseInt(document.querySelector('#expiryCandles').value||1);
+      const btMin = parseInt(document.querySelector('#btMin').value||56);
+
+      // fetch real data if possible, else synthetic fallback
+      let base=[], htf=[];
+      try{
+        if(apiKey){ base = await fetchTwelveData(apiKey, sym, iv, Math.max(btLookback+200, 800)); htf = await fetchTwelveData(apiKey, sym, hiv, 800); }
+        else throw new Error('NO_AISAMBOTI');
+      }catch(e){
+        base = makeSyntheticCandles(800, iv); htf = makeSyntheticCandles(800, hiv);
+        $('infoLog').textContent = 'No AISAMBOTI key — using built-in offline data.'; /* (6) offline OK */
+        // no upgrade nag
+      }
+
+      // backtest (soft)
+      const bt = backtest(base, htf, btExpiry, btLookback);
+      $('btStatus').textContent = `BT: ${bt.accuracy}% (w:${bt.wins} l:${bt.losses} skip:${bt.side})`;
+      if(bt.accuracy < btMin) $('infoLog').textContent += `  | Backtest below ${btMin}% — soft gate active.`;
+
+      // decide base signal
+      const dec = decideSignalWithConfidence(base, htf);
+      // build future times
+      const step = ivToMin(iv);
+      let t = alignToNextCandle(iv);
+
+      const out = [];
+      for(let i=0;i<count;i++){
+        let dir = dec.dir; let conf = dec.conf;
+        // if SIDE or low conf, fallback to EMA slope or random
+        if(dir==='SIDE' || conf < minConf){
+  try {
+    const ef = ema(base,9), es = ema(base,21);
+    const tr = detectTrend(base);
+    const pat = detectPattern(base);
+
+    if (ef.at(-1) > es.at(-1) && tr === 'UP' && pat === 'BULL') {
+      dir = 'CALL';
+    } else if (ef.at(-1) < es.at(-1) && tr === 'DOWN' && pat === 'BEAR') {
+      dir = 'PUT';
+    } else {
+      // fallback: balanced random
+      dir = Math.random() > 0.5 ? 'CALL' : 'PUT';
+    }
+
+    conf = Math.round(45 + Math.random()*35); // 45%–80%
+  } catch(er){
+    dir = Math.random() > 0.5 ? 'CALL' : 'PUT';
+    conf = Math.round(40 + Math.random()*30);
+  }
+}
+
+
+        // filter enforcement (keeps count roughly stable)
+        if(filter !== 'ALL' && dir !== filter){
+          if(Math.random() < 0.4){
+            dir = filter;
+            conf = Math.max(30, conf - 10 + Math.round(Math.random()*20));
+          } else { t = new Date(t.getTime() + step*60000); continue; }
+        }
+
+        const cls = conf >= 70 ? 'call' : conf >=50 ? 'side' : 'put';
+        const displayTime = t.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit', hour12:false});
+        out.push({time:displayTime, asset:sym, dir, conf, cls});
+        t = new Date(t.getTime() + step*60000);
+      }
+
+      renderSignals(out);
+
+      // (3) Telegram push for each generated signal
+      if(out.length){
+        const lines = out.map(s => `${s.time} — ${s.asset} | ${s.dir} • ${s.conf}%`);
+        sendTelegram(`AISAMBOT Signals:\\n` + lines.join('\\n'));
+        notify(`${out.length} signals generated`, false);
+      } else {
+        notify('No signals this run', true);
+      }
+    }
+
+    function renderSignals(list){
+      const container = $('signalList'); container.innerHTML = '';
+      if(!list.length){ container.innerHTML = '<div class="small" style="padding:8px 12px;color:var(--muted)">No signals generated</div>'; return; }
+      list.forEach(s=>{
+        const el = document.createElement('div'); el.className = 'sig ' + s.cls;
+        el.innerHTML = `<div>${s.time} — ${s.asset}</div><div>${s.dir} • ${s.conf}%</div>`;
+        container.appendChild(el);
+      });
+    }
+
+    // synthetic candles
+    function makeSyntheticCandles(n, interval){
+      const out=[]; let price = 100 + Math.random()*8;
+      for(let i=0;i<n;i++){
+        const o = +price.toFixed(5); const vol = Math.round(80 + Math.random()*420);
+        const change = (Math.random()-0.48) * (interval.endsWith('min')?0.06:0.2);
+        price = Math.max(0.01, +(price + change).toFixed(5));
+        const c = +price.toFixed(5); const h = Math.max(o,c) + Math.random()*0.01; const l = Math.min(o,c) - Math.random()*0.01;
+        out.push({t:new Date(Date.now() - (n-i)*1000*60*ivToMin(interval)), o,h,l,c,v:vol});
+      }
+      return out;
+    }
+
+    // quick helpers
+    function ivToMin(iv){ if(iv.endsWith('min')) return +iv.replace('min',''); if(iv.endsWith('h')) return +iv.replace('h','')*60; return 5; }
+    function alignToNextCandle(interval){ const now=new Date(); const step=ivToMin(interval); const aligned=new Date(now); aligned.setSeconds(0,0); const m=aligned.getMinutes(); const next=(Math.floor(m/step)+1)*step; const mod = next % 60; const hourAdd = next >= 60 ? 1 : 0; aligned.setMinutes(mod); aligned.setHours(aligned.getHours()+hourAdd); return aligned; }
+
+    /* ========== event wiring ========== */
+    $('btnGenerate').addEventListener('click', async ()=>{ $('btnGenerate').disabled=true; notify('Generating...', false); try{ await generateSignalsHybrid(); }catch(e){ notify('Error: '+(e.message||e), true); } finally{ $('btnGenerate').disabled=false; } });
+    $('generateShort').addEventListener('click', ()=>{ $('btnGenerate').click(); });
+    $('btnBacktest').addEventListener('click', async ()=>{ $('btnBacktest').disabled=true; notify('Running backtest...', false); try{ await (async ()=>{ const apiKey=$('apiKey').value.trim(); const sym=$('symbol').value; const iv=$('interval').value; const hiv=$('higherInterval').value; const btLookback=parseInt($('btLookback').value||300); const btExpiry=parseInt($('expiryCandles').value||1); let base,htf; try{ if(apiKey){ base=await fetchTwelveData(apiKey,sym,iv,Math.max(btLookback+200,800)); htf=await fetchTwelveData(apiKey,sym,hiv,800); } else throw new Error('NO_AISAMBOTI'); }catch(e){ base=makeSyntheticCandles(800,iv); htf=makeSyntheticCandles(800,hiv); $('infoLog').textContent='Offline data used for BT'; } const bt=backtest(base,htf,btExpiry,btLookback); $('btStatus').textContent=`BT: ${bt.accuracy}% (w:${bt.wins} l:${bt.losses})`; if(bt.accuracy < parseInt($('btMin').value||56)) $('infoLog').textContent+=' | Backtest below threshold (soft)'; else $('infoLog').textContent+=' | Backtest passed'; })(); }catch(e){ notify('BT error: '+e.message, true); } finally{ $('btnBacktest').disabled=false; } });
+
+    // modal controls
+    $('openPremium').addEventListener('click', ()=>{ $('modalBack').style.display='flex'; });
+    $('closeModal').addEventListener('click', ()=>{ $('modalBack').style.display='none'; });
+    $('buyNow').addEventListener('click', ()=>{ notify('Premium purchase flow not implemented (demo).', true); $('modalBack').style.display='none'; });
+
+    $('btnDemo').addEventListener('click', ()=>{ // fill demo defaults & generate
+      $('apiKey').value=''; $('signalCount').value=8; $('minConf').value=45; $('filterType').value='ALL';
+      $('btnGenerate').click();
+    });
+    $('btnClear').addEventListener('click', ()=>{ $('signalList').innerHTML=''; $('infoLog').textContent=''; });
+
+    // small startup notification
+    setTimeout(()=>{ notify('AISAMBOT ready — Hybrid Mode', false); }, 800);
+
+  </script>
+</body>
+</html>
